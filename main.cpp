@@ -72,7 +72,7 @@ class Stack
     
 public:
     
-    int A[MAX];//MAX=10000
+    Vector v;//MAX=10000
     
     Stack()
     {
@@ -94,7 +94,7 @@ bool Stack::push(int x)
     }
     else
     {
-        A[++top]=x;
+        v[++top]=x;
         cout<<x<<" pushed into stack"<<endl;
         return true;
     }
@@ -109,7 +109,7 @@ int Stack::pop()
     }
     else
     {
-        int x = A[top--];
+        int x = v[top--];
         return x;
     }
 }
@@ -123,7 +123,7 @@ int Stack::peek()
     }
     else
     {
-        int x = A[top];
+        int x = v[top];
         return x;
     }
 }
@@ -135,12 +135,9 @@ bool Stack::IsEmpty()
 
 int main()
 {
-    
-    
-    
-    
-    
-    
-    
+    Stack s;
+    s.push(5);
+    s.peek();
+   
     return 0;
 }
