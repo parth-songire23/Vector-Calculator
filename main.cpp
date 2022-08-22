@@ -69,10 +69,9 @@ const int MAX=10000;
 class Stack
 {
     int top;
+    Vector v;//MAX=10000
     
 public:
-    
-    Vector v;//MAX=10000
     
     Stack()
     {
