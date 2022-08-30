@@ -11,46 +11,48 @@
 
 using namespace std;
 
+template <typename T>
 class Vector
 {
 private:
-    int *arr;
+    T *arr;
     int currsize;
     int capacity;
-    
+
 public:
     Vector(int n=1)
     {
-        arr= new int[n];
+        arr= new T[n];
         currsize=0;
         capacity=n;
     }
-    
+
     ~Vector()
     {
         delete []arr;
     }
-    
+
     int curr_size()
     {
         return currsize;
     }
-    
-    int & operator[](int index)
+
+
+    T & operator[](int index)
     {
         if(index<currsize)
             return arr[index];
-        
+
         if(index>currsize)
         {
             cout<<"Error...."<<endl;
             exit(1);
         }
-        
+
         if(currsize==capacity)
         {
-            int *narr = new int[2*capacity];
-            
+            T *narr = new T[2*capacity];
+
             for(int i=0;i<capacity;i++)
             {
                 narr[i]=arr[i];
@@ -59,32 +61,35 @@ public:
             arr=narr;
             capacity *=2;
         }
-        
+
         currsize +=1;
         return arr[index];
     }
 };
 
 const int MAX=10000;
+
+template <typename T>
 class Stack
 {
     int top;
-    Vector v;//MAX=10000
-    
+    Vector<T> v;//MAX=10000
+
 public:
-    
+
     Stack()
     {
         top=-1;
     }
-    
-    bool push(int x);
-    int pop();
-    int peek();
+
+    bool push(T x);
+    T pop();
+    T peek();
     bool IsEmpty();
 };
 
-bool Stack::push(int x)
+template <typename T>
+bool Stack<T>::push(T x)
 {
     if(top>=MAX-1)
     {
@@ -99,21 +104,23 @@ bool Stack::push(int x)
     }
 }
 
-int Stack::pop()
+template <typename T>
+T Stack<T>::pop()
 {
     if (top < 0)
     {
-        cout << "Stack Underflow";
+        cout << "Stack Underflow"<<endl;
         return 0;
     }
     else
     {
-        int x = v[top--];
+        T x = v[top--];
         return x;
     }
 }
 
-int Stack::peek()
+template <typename T>
+T Stack<T>::peek()
 {
     if (top < 0)
     {
@@ -122,21 +129,22 @@ int Stack::peek()
     }
     else
     {
-        int x = v[top];
+        T x = v[top];
         return x;
     }
 }
-  
-bool Stack::IsEmpty()
+
+template <typename T>
+bool Stack<T>::IsEmpty()
 {
     return (top < 0);
 }
 
 int main()
 {
-    Stack s;
+    Stack<int>s;
     s.push(5);
     s.peek();
-   
+
     return 0;
 }
