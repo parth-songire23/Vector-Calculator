@@ -7,7 +7,8 @@
 
 #ifndef LinkedList_h
 #define LinkedList_h
-
+#include <iostream>
+using namespace std;
 template <class T>
 class Linkedlist
 {
@@ -21,18 +22,18 @@ private:
         Link(const T &data): _data(data) {_prev=_next=NULL;}
         ~Link(){_prev=_next=NULL;}
     };
-    
+
     Link *_head;
     Link *_tail;
     int _length;
-    
+
 public:
     Linkedlist()
     {
         _head=_tail=NULL;
         _length=0;
     }
-    
+
     ~Linkedlist()
     {
         for(int i=0;i<_length;i++)
@@ -42,7 +43,7 @@ public:
             delete n;
         }
     }
-    
+
     int size()
     {
         return _length;
@@ -62,24 +63,54 @@ public:
         }
         _length+=1;
     }
-    
-    T &tail(){return _tail->_data;}
-    
+
+    T &tail()
+    {
+        if(_tail==NULL)
+            cout<<"No elements left... :("<<endl;
+        return _tail->_data;
+    }
+    T &head()
+    {
+        if(_head==NULL)
+            cout<<"No elements left... :("<<endl;
+        return _head->_data;
+    }
+
     T remove_last()
     {
         T ret =_tail->_data;
         Link *tail = _tail;
-        
-        if(length==1)
+
+        if(_length==1)
             _head=_tail=NULL;
         else
             _tail=_tail->_prev;
-        
+
         delete tail;
         _length -=1;
         return ret;
     }
-    
+
+    T remove_start()
+    {
+        if(_head==NULL)
+            return 0;
+        T ret = _head->_data;
+        Link *head=_head;
+
+         if(_length==1)
+            _head=_tail=NULL;
+        else
+            _head=_head->_next;
+
+        delete head;
+        _length -=1;
+        cout<<ret<<" deQueued"<<endl;
+        return ret;
+
+    }
+
     T &get(int index)
     {
         Link *curr=_head;
