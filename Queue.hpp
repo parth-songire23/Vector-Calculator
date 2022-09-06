@@ -13,47 +13,31 @@
 template<class T>
 class Queue
 {
-    
+
 private:
     Linkedlist<T> _queue;
-    
+
 public:
     Queue(){};
-    
+
     void enQueue(int x)
     {
         _queue.append(x);
     }
-    
+
     void deQueue()
     {
-    // If queue is empty, return NULL.
-        if (_queue._head == NULL)
-            return;
-      
-    // Store previous front and
-    // move front one node ahead
-        Link *temp = _queue._head;
-        
-    //  QNode* temp = front;
-        _queue._head = _queue._head->next;
-      
-    // If front becomes NULL, then
-    // change rear also as NULL
-        if (_queue._head == NULL)
-            _queue._tail = NULL;
-      
-        delete (temp);
+        _queue.remove_start();
     }
 
     int atfront()
     {
-        return _queue._head->data;
+        return _queue.head();
     }
-    
+
     int atrear()
     {
-        return _queue._tail->data;
+        return _queue.tail();
     }
 };
 
