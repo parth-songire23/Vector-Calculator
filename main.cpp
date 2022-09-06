@@ -1,198 +1,163 @@
 //
 //  main.cpp
-//  VectorClass.cpp
+//  samp.cpp
 //
-//  Created by Parth Sunil Songire on 21/08/22.
+//  Created by Parth Sunil Songire on 06/09/22.
 //
-
 #include <iostream>
-#include <string>
-#include <vector>
-
-#include "LinkedList.hpp"
-#include "stack.hpp"
-#include "expr.hpp"
-#include "tokenizer.hpp"
-
 using namespace std;
 
-template <typename T>
-class Vector
+template <class T>
+class Link
 {
-private:
-    T *arr;
-    int currsize;
-    int capacity;
-
 public:
-    Vector(int n=1)
+    T _data;
+    Link *_prev;
+    Link *_next;
+    Link(const T &data): _data(data) {_prev=_next=NULL;}
+    ~Link(){_prev=_next=NULL;}
+};
+template <class T>
+class Linkedlist
+{
+public:
+    Link<T> *_head;
+    Link<T> *_tail;
+    int _length;
+    
+    Linkedlist()
     {
-        arr= new T[n];
-        currsize=0;
-        capacity=n;
+        _head=_tail=NULL;
+        _length=0;
     }
-
-    ~Vector()
+    
+    ~Linkedlist()
     {
-        delete []arr;
-    }
-
-    int curr_size()
-    {
-        return currsize;
-    }
-
-
-    T & operator[](int index)
-    {
-        if(index<currsize)
-            return arr[index];
-
-        if(index>currsize)
+        for(int i=0;i<_length;i++)
         {
-            cout<<"Error...."<<endl;
-            exit(1);
+            Link<T> *n=_head;
+            _head=_head->_next;
+            delete n;
         }
-
-        if(currsize==capacity)
+    }
+    
+    int size()
+    {
+        return _length;
+    }
+    void append(const T &data)
+    {
+        Link<T> *n =new Link(data);
+        if(_length==0)
         {
-            T *narr = new T[2*capacity];
-
-            for(int i=0;i<capacity;i++)
-            {
-                narr[i]=arr[i];
-            }
-            delete []arr;
-            arr=narr;
-            capacity *=2;
+            _head=_tail=n;
         }
-
-        currsize +=1;
-        return arr[index];
+        else
+        {
+            _tail->_next=n;
+            n->_prev=_tail;
+            _tail=n;
+        }
+        _length+=1;
+    }
+    
+    T &tail(){return _tail->_data;}
+    
+    T remove_last()
+    {
+        T ret =_tail->_data;
+        Link<T> *tail = _tail;
+        
+        if(_length==1)
+            _head=_tail=NULL;
+        else
+            _tail=_tail->_prev;
+        
+        delete tail;
+        _length -=1;
+        return ret;
+    }
+    
+    T &get(int index)
+    {
+        Link<T> *curr=_head;
+        for(int i=0;i<index;i++)
+        {
+            curr=curr->next;
+        }
+        return curr->_data;
     }
 };
 
-const int MAX=10000;
-
-template <typename T>
+template <class T>
 class Stack
 {
-    int top;
-    Vector<T> v;//MAX=10000
-
+private:
+    Linkedlist<T> _stack;
+    
 public:
-
-    Stack()
-    {
-        top=-1;
-    }
-
-    bool push(T x);
-    T pop();
-    T peek();
-    bool IsEmpty();
+    Stack(){};
+    bool isEmpty() { return _stack.size()==0;}
+    int size() { return _stack.size();}
+    T &top() { return _stack.tail();}
+    
+    void push(const T &e){_stack.append(e);}
+    T pop(){return _stack.remove_last();}
 };
 
-template <typename T>
-bool Stack<T>::push(T x)
+template<class T>
+class Queue
 {
-    if(top>=MAX-1)
+    
+private:
+    Linkedlist<T> _queue;
+    
+public:
+    Queue(){};
+    
+    void enQueue(T x)
     {
-        cout<<"Stack Overflow"<<endl;
-        return false;
+        _queue.append(x);
     }
-    else
+    
+    void deQueue()
     {
-        v[++top]=x;
-        cout<<x<<" pushed into stack"<<endl;
-        return true;
+    // If queue is empty, return NULL.
+        if (_queue._head == NULL)
+            return;
+      
+    // Store previous front and
+    // move front one node ahead
+        Link<T> *temp = _queue._head;
+        
+    //  QNode* temp = front;
+        _queue._head = _queue._head->next;
+      
+    // If front becomes NULL, then
+    // change rear also as NULL
+        if (_queue._head == NULL)
+            _queue._tail = NULL;
+      
+        delete (temp);
     }
-}
 
-template <typename T>
-T Stack<T>::pop()
-{
-    if (top < 0)
+    int atfront()
     {
-        cout << "Stack Underflow"<<endl;
-        return 0;
+        return _queue._head->_data;
     }
-    else
+    
+    int atrear()
     {
-        T x = v[top--];
-        return x;
+        return _queue._tail->_data;
     }
-}
-
-template <typename T>
-T Stack<T>::peek()
-{
-    if (top < 0)
-    {
-        cout << "Stack is Empty";
-        return 0;
-    }
-    else
-    {
-        T x = v[top];
-        return x;
-    }
-}
-
-template <typename T>
-bool Stack<T>::IsEmpty()
-{
-    return (top < 0);
-}
+};
 
 int main()
 {
-    Tokenizer tokenizer;
-    Token *t;
-    Stack<Token*> stack;
-    Linkedlist<Token*> outls;
-    
-    while((t=tokenizer.next()))
-    {
-        if(t->isNum())
-        {
-            outls.append(t);
-            continue;
-        }
-        if(t->isOper())
-        {
-            for(;!stack.isEmpty() && stack.top()->isOper() && stack.top->precedence()>t->precedence;outls.append(stack.pop()) );
-            stack.push(t);
-            continue;
-        }
-        
-        if(t->isLeftBracket())
-        {
-            stack.push(t);
-            continue;
-        }
-        
-        if(t->isRightBracket())
-        {
-            for(;!stack.top()->isLeftBracket(); outls.append(stack.pop()) );
-            stack.pop;
-            continue;
-        }
-    }
-    
-    for(;!stack.isEmpty() ; outls.append(stack.pop()) );
-    
-    for(int i=0;i<outls.size();i++)
-    {
-        cout<<*outls.get(i)<<" ";
-    }
-    cout<<endl;
-    
-    Expr *c1 = new Const(5);
-    Expr *c2 = new Const(6);
-    Expr *p = new Plus(c1,c2);
-    Expr *m = new Mult(p, new Const(10));
-    cout<< m->eval() <<endl;
-    
+    Queue<int> q;
+    q.enQueue(10);
+    int t = q.atfront();
+    cout<<t<<endl;
     return 0;
 }
+
