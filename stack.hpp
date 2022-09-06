@@ -18,7 +18,7 @@ private:
     Linkedlist<T> _stack;
     
 public:
-    Stack(){};
+    Stack(){}
     bool isEmpty() { return _stack.size()==0;}
     int size() { return _stack.size();}
     T &top() { return _stack.tail();}
